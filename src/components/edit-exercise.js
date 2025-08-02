@@ -2,9 +2,18 @@ import React, { Component } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"
 import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 
+function withRouter(Component) {
+    function ComponentWithRouterProp(props) {
+        let params = useParams();
+        let navigate = useNavigate();
+        return <Component {...props} params={params} navigate={navigate}/>;
+    }
+    return ComponentWithRouterProp;
+}
 
-export default class EditExercise extends Component {
+class EditExercise extends Component {
     constructor(props){
         super(props)
 
@@ -26,7 +35,9 @@ export default class EditExercise extends Component {
     }
 
     componentDidMount(){
-        axios.get(`http://localhost:5000/exercises/${this.props.match.params.id}`)
+        const { id } = this.props.params;
+
+        axios.get(`http://localhost:5000/exercises/${id}`)
             .then((res) => {
                 this.setState({
                     username:res.data.username,
@@ -77,6 +88,8 @@ export default class EditExercise extends Component {
     onSubmit(e){
         e.preventDefault();
 
+        const { id } = this.props.params;
+
         const exercise = {
             username : this.state.username,
             description : this.state.description,
@@ -84,13 +97,11 @@ export default class EditExercise extends Component {
             date : this.state.date
         }
 
-        axios.post(`http://localhost:5000/exercises/edit/${this.props.match.params.id}`,exercise)
+        axios.put(`http://localhost:5000/exercises/update/${id}`,exercise)
         .then((res) => {
             console.log(res);
+            this.props.navigate("/");
         })
-
-        window.location = "/";
-        
     }
 
     render () {
@@ -152,3 +163,5 @@ export default class EditExercise extends Component {
         );
     }
 }
+
+export default withRouter(EditExercise);

@@ -41,7 +41,7 @@ export default class ExercisesList extends Component {
     }
 
     deleteExercise(id) {
-        axios.delete(`http://localhost:5000/exercises/${id}`)
+        axios.delete(`http://localhost:5000/exercises/delete/${id}`)
             .then((res) => console.log(res.data));
         this.setState({
             exercises: this.state.exercises.filter(el => el._id !== id)
@@ -63,7 +63,7 @@ export default class ExercisesList extends Component {
                         <tr>
                             <th>Username</th>
                             <th>Description</th>
-                            <th>Duration</th>
+                            <th>Duration(minutes)</th>
                             <th>Date</th>
                             <th>Actions</th>
                         </tr>
